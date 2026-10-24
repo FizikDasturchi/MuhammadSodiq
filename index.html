@@ -124,6 +124,7 @@ body.in-app{height:100dvh;overflow:hidden}
 .appbar .ttl{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .appbar .sp{margin-left:auto;display:flex;gap:8px}
 @media (max-width:560px){ .appbar .ttl{display:none} .appbar .sp{margin-left:auto} }
+.note{margin:0;padding:7px 14px;font-size:.85rem;color:var(--sub);background:var(--bg);border-bottom:1px solid var(--line)}
 .stage{position:relative;flex:1;min-height:0;background:var(--bg)}
 .stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 .loading{
@@ -178,6 +179,7 @@ body.in-app{height:100dvh;overflow:hidden}
         <button id="fs" type="button">To‘liq ekran</button>
       </span>
     </div>
+    <p class="note" id="note" hidden></p>
     <div class="stage" id="stage">
       <div class="loading" id="loading"><div><div class="spin"></div>Yuklanmoqda…</div></div>
     </div>
@@ -214,6 +216,7 @@ body.in-app{height:100dvh;overflow:hidden}
    bitta qator qo‘shing. "url" — papka yo‘li yoki to‘liq havola.
    ═══════════════════════════════════════════════════════════ */
 var ICONS = {
+  play:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="4"/><path d="m10 9 5 3-5 3V9Z" fill="currentColor"/></svg>',
   book:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.500 2.500 0 0 1 6.500 3H20v15H6.500A2.500 2.500 0 0 0 4 20.500v-15Z"/><path d="M4 20.500A2.500 2.500 0 0 0 6.500 23H20v-5"/><path d="M9 8h7"/></svg>',
   words: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h9M7.500 6c0 5-2 8-4.500 10M5 10c1.500 2.500 3.500 4 6 5"/><path d="m13 20 4.500-11L22 20M14.500 16.500h6"/></svg>',
   quiz:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.500 9.500a2.500 2.500 0 1 1 3.500 2.300c-.7.400-1 .9-1 1.700"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>',
@@ -222,17 +225,29 @@ var ICONS = {
 };
 
 var PROJECTS = [
-  { id:'kutubxona', title:'Fizika fakulteti onlayn kutubxonasi', desc:'Fizika fakulteti uchun onlayn kutubxona: bo‘limlar bo‘yicha materiallar.',
-    url:'apps/kutubxona/index.html', icon:'book',  color:'var(--tile-a)' },
-  { id:'lugat',     title:'Lug‘at testi', desc:'So‘zlarni yodlash va bilimni sinash uchun test dasturi.',
-    url:'apps/lugat/index.html',     icon:'words', color:'var(--tile-c)' },
-  { id:'quiz',      title:'Quiz dasturi', desc:'Word (.docx) faylidagi savollardan test tuzib, ishlash dasturi.',
-    url:'apps/quiz/index.html',      icon:'quiz',  color:'var(--tile-d)' },
-  { id:'calculabor',title:'Laboratoriya kalkulyatori', desc:'Laboratoriya ishlari natijalarini hisoblash uchun kalkulyator.',
-    url:'apps/calculabor/index.html',icon:'calc',  color:'var(--tile-b)' },
-  { id:'plastinkalar', title:'Plastinkalar simulyatsiyasi', desc:'Plastinkalar mavzusidagi interaktiv 3D simulyatsiya (GlowScript).',
+  { id:'video-darslar', title:'Fizik jarayonlarni kompyuterda modellashtirish — video darslar',
+    desc:'Turkiston Science kanalidagi video darslar to‘plami (pleylist).',
+    url:'https://www.youtube.com/embed/videoseries?list=PL0ck-shqcsNLx-JgcXQAMWchVEVTqpwAS',
+    open:'https://youtube.com/playlist?list=PL0ck-shqcsNLx-JgcXQAMWchVEVTqpwAS',
+    icon:'play', color:'var(--tile-e)',
+    note:'Biror video bu yerda ochilmasa, "Yangi oynada" tugmasi orqali YouTube’da ko‘ring.' },
+  { id:'quiz', title:'Quiz Web test platformasi',
+    desc:'Word (.docx) faylidagi savollardan test tuzib, ishlash platformasi.',
+    url:'https://muhammadsodiq0825-ux.github.io/QuizWeb/', icon:'quiz', color:'var(--tile-d)' },
+  { id:'kutubxona', title:'Fizika kutubxonasi',
+    desc:'Fizika fakulteti uchun onlayn kutubxona: bo‘limlar bo‘yicha materiallar.',
+    url:'https://fizikdasturchi.github.io/OnlineLabaratory/', icon:'book', color:'var(--tile-a)' },
+  { id:'lugat', title:'Dictionary Test App',
+    desc:'So‘zlarni yodlash va bilimni sinash uchun test platformasi.',
+    url:'https://muhammadsodiq0825-ux.github.io/EnglishTest/', icon:'words', color:'var(--tile-c)' },
+  { id:'kalkulyator', title:'Laboratoriya kalkulyatori',
+    desc:'Laboratoriya ishlari natijalarini hisoblash platformasi.',
+    url:'https://muhammadsodiq0825-ux.github.io/NewApp/', icon:'calc', color:'var(--tile-b)' },
+  { id:'plastinkalar', title:'Chorak va yarim to‘lqin plastinkalar — laboratoriya ishi simulyatori',
+    desc:'Plastinkalar laboratoriya ishining interaktiv 3D simulyatori (GlowScript).',
     url:'https://www.glowscript.org/#/user/fizikdasturchi/folder/MyPrograms/program/Plastinkalar',
-    icon:'plates', color:'var(--tile-e)' }
+    icon:'plates', color:'var(--tile-a)',
+    note:'Simulyator bu yerda ochilmasa, "Yangi oynada" tugmasini bosing.' }
 ];
 
 var $ = function(id){ return document.getElementById(id); };
@@ -260,7 +275,9 @@ PROJECTS.forEach(function(p){
 function openApp(p){
   document.body.classList.add('in-app');
   $('ttl').textContent = p.title;
-  $('ext').href = p.url;
+  $('ext').href = p.open || p.url;
+  $('note').textContent = p.note || '';
+  $('note').hidden = !p.note;
   document.title = p.title + ' — Turkistan Science';
   loading.classList.remove('done');
   if (frame) frame.remove();
