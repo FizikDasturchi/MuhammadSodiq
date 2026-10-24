@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Turkistan Science — Muhammad Sodiq Shamsiddinov loyihalari</title>
-<meta name="description" content="Turkiston Science kanali asoschisi Muhammad Sodiq Shamsiddinov tomonidan yaratilgan loyihalar.">
+<title>Turkiston Science — Muhammad Sodiq Şamsiddinov loyihalari</title>
+<meta name="description" content="Turkiston Science kanali asosçisi Muhammad Sodiq Şamsiddinovning loyihalar majmuasi">
 <meta name="theme-color" content="#14284b">
 <link rel="icon" href="favicon.ico">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314284b'/%3E%3Ccircle cx='32' cy='32' r='5' fill='%23e0a21b'/%3E%3Cg fill='none' stroke='%2336c2cf' stroke-width='3'%3E%3Cellipse cx='32' cy='32' rx='22' ry='9'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='9' transform='rotate(60 32 32)'/%3E%3Cellipse cx='32' cy='32' rx='22' ry='9' transform='rotate(120 32 32)'/%3E%3C/g%3E%3C/svg%3E">
@@ -126,9 +126,12 @@ body.in-app{height:100dvh;overflow:hidden}
 @media (max-width:560px){ .appbar .ttl{display:none} .appbar .sp{margin-left:auto} }
 .note{margin:0;padding:7px 14px;font-size:.85rem;color:var(--sub);background:var(--bg);border-bottom:1px solid var(--line)}
 .stage{position:relative;flex:1;min-height:0;background:var(--bg)}
-.stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
+#pool{position:fixed;left:0;top:0;width:100vw;height:100vh;height:100dvh;visibility:hidden;pointer-events:none;z-index:5}
+body.in-app #pool{visibility:visible;pointer-events:auto}
+#pool iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;visibility:hidden}
+#pool iframe.on{visibility:visible}
 .loading{
-  position:absolute;inset:0;display:grid;place-items:center;color:var(--sub);font-weight:600;
+  position:absolute;inset:0;z-index:6;display:grid;place-items:center;color:var(--sub);font-weight:600;
   background:var(--bg);transition:opacity .2s;
 }
 .loading.done{opacity:0;pointer-events:none}
@@ -151,7 +154,7 @@ body.in-app{height:100dvh;overflow:hidden}
     </a>
     <a href="https://www.youtube.com/@YangiZamonJadidlari" target="_blank" rel="noopener">
       <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23 7.2a3 3 0 0 0-2.100-2.100C19 4.600 12 4.600 12 4.600s-7 0-8.900.5A3 3 0 0 0 1 7.200C.5 9.100.5 12 .5 12s0 2.900.5 4.800a3 3 0 0 0 2.100 2.100c1.900.5 8.900.5 8.900.5s7 0 8.900-.5a3 3 0 0 0 2.100-2.100c.5-1.900.5-4.800.5-4.800s0-2.900-.5-4.800ZM9.700 15.500v-7l6 3.500-6 3.500Z"/></svg>
-      <span>Turkiston Science</span>
+      <span>Yangi Zamon Jadidlari</span>
     </a>
   </nav>
 </header>
@@ -210,6 +213,8 @@ body.in-app{height:100dvh;overflow:hidden}
   </div>
 </footer>
 
+<div id="pool" aria-hidden="false"></div>
+
 <script>
 /* ═══════════════════════════════════════════════════════════
    LOYIHALAR RO‘YXATI — yangi loyiha qo‘shish uchun shu yerga
@@ -225,25 +230,25 @@ var ICONS = {
 };
 
 var PROJECTS = [
-  { id:'video-darslar', title:'Fizik jarayonlarni kompyuterda modellashtirish — video darslar',
+  { id:'video-darslar', keep:false, title:'Fizik jarayonlarni kompyuterda modellashtirish — video darslar',
     desc:'Turkiston Science kanalidagi video darslar to‘plami (pleylist).',
     url:'https://www.youtube.com/embed/videoseries?list=PL0ck-shqcsNLx-JgcXQAMWchVEVTqpwAS',
     open:'https://youtube.com/playlist?list=PL0ck-shqcsNLx-JgcXQAMWchVEVTqpwAS',
     icon:'play', color:'var(--tile-e)',
     note:'Biror video bu yerda ochilmasa, "Yangi oynada" tugmasi orqali YouTube’da ko‘ring.' },
-  { id:'quiz', title:'Quiz Web test platformasi',
+  { id:'quiz', preload:'idle', title:'Quiz Web test platformasi',
     desc:'Word (.docx) faylidagi savollardan test tuzib, ishlash platformasi.',
     url:'https://muhammadsodiq0825-ux.github.io/QuizWeb/', icon:'quiz', color:'var(--tile-d)' },
-  { id:'kutubxona', title:'Fizika kutubxonasi',
+  { id:'kutubxona', preload:'idle', title:'Fizika kutubxonasi',
     desc:'Fizika fakulteti uchun onlayn kutubxona: bo‘limlar bo‘yicha materiallar.',
     url:'https://fizikdasturchi.github.io/OnlineLabaratory/', icon:'book', color:'var(--tile-a)' },
-  { id:'lugat', title:'Dictionary Test App',
+  { id:'lugat', preload:'idle', title:'Dictionary Test App',
     desc:'So‘zlarni yodlash va bilimni sinash uchun test platformasi.',
     url:'https://muhammadsodiq0825-ux.github.io/EnglishTest/', icon:'words', color:'var(--tile-c)' },
-  { id:'kalkulyator', title:'Laboratoriya kalkulyatori',
+  { id:'kalkulyator', preload:'idle', title:'Laboratoriya kalkulyatori',
     desc:'Laboratoriya ishlari natijalarini hisoblash platformasi.',
     url:'https://muhammadsodiq0825-ux.github.io/NewApp/', icon:'calc', color:'var(--tile-b)' },
-  { id:'plastinkalar', title:'Chorak va yarim to‘lqin plastinkalar — laboratoriya ishi simulyatori',
+  { id:'plastinkalar', keep:false, title:'Chorak va yarim to‘lqin plastinkalar — laboratoriya ishi simulyatori',
     desc:'Plastinkalar laboratoriya ishining interaktiv 3D simulyatori (GlowScript).',
     url:'https://www.glowscript.org/#/user/fizikdasturchi/folder/MyPrograms/program/Plastinkalar',
     icon:'plates', color:'var(--tile-a)',
@@ -251,8 +256,9 @@ var PROJECTS = [
 ];
 
 var $ = function(id){ return document.getElementById(id); };
-var grid = $('grid'), stage = $('stage'), loading = $('loading');
-var frame = null;
+var grid = $('grid'), stage = $('stage'), loading = $('loading'), pool = $('pool');
+var frames = {};      /* id -> {el, loaded} — oldindan yuklangan dasturlar shu yerda saqlanadi */
+var activeId = null;
 
 /* Logotip: favicon.ico topilmasa, o‘rnatilgan belgi ishlatiladi */
 var logo = $('logo');
@@ -263,53 +269,125 @@ function logoFallback(){
 logo.onerror = logoFallback;
 if (logo.complete && logo.naturalWidth === 0) logoFallback();
 
+function byId(id){ return PROJECTS.filter(function(x){ return x.id === id; })[0]; }
+
+/* Dasturni (ko‘rinmas holda) oldindan yuklab qo‘yish */
+function ensure(p){
+  if (frames[p.id]) return frames[p.id];
+  var f = document.createElement('iframe');
+  f.title = p.title;
+  f.setAttribute('allow', 'fullscreen; clipboard-read; clipboard-write; microphone; camera');
+  f.setAttribute('allowfullscreen', '');
+  var e = { el: f, loaded: false };
+  f.addEventListener('load', function(){
+    e.loaded = true;
+    if (activeId === p.id){ loading.classList.add('done'); focusActive(); }
+  });
+  f.src = p.url;
+  pool.appendChild(f);
+  frames[p.id] = e;
+  return e;
+}
+function drop(id){
+  var e = frames[id]; if (!e) return;
+  e.el.remove(); delete frames[id];
+}
+
+/* Klaviatura (Ctrl+sichqoncha) simulyatorga yetib borishi uchun fokus beramiz */
+function focusActive(){
+  var e = frames[activeId]; if (!e) return;
+  try { e.el.focus(); if (e.el.contentWindow) e.el.contentWindow.focus(); } catch(x){}
+}
+pool.addEventListener('mouseenter', focusActive);
+
+/* Pool dastur oynasi joyiga to‘g‘ri keladi; bosh sahifada esa butun ekran
+   o‘lchamida ko‘rinmas turadi (dasturlar to‘g‘ri o‘lchamda yuklanishi uchun) */
+function placePool(){
+  if (document.fullscreenElement === pool) return;
+  if (document.body.classList.contains('in-app')){
+    var r = stage.getBoundingClientRect();
+    pool.style.left = r.left + 'px'; pool.style.top = r.top + 'px';
+    pool.style.width = r.width + 'px'; pool.style.height = r.height + 'px';
+  } else {
+    pool.style.left = '0'; pool.style.top = '0';
+    pool.style.width = '100vw'; pool.style.height = '100vh';
+  }
+}
+window.addEventListener('resize', placePool);
+if (window.ResizeObserver) new ResizeObserver(placePool).observe(stage);
+
+/* Kartalar */
 PROJECTS.forEach(function(p){
   var b = document.createElement('button');
   b.className = 'app'; b.type = 'button';
   b.innerHTML = '<span class="tile" style="background:' + p.color + '">' + ICONS[p.icon] + '</span>' +
                 '<h3>' + p.title + '</h3><p>' + p.desc + '</p><span class="go">Ochish →</span>';
   b.addEventListener('click', function(){ location.hash = p.id; });
+  if (p.keep !== false){
+    var warm = function(){ ensure(p); };
+    b.addEventListener('pointerenter', warm);
+    b.addEventListener('focus', warm);
+    b.addEventListener('touchstart', warm, {passive:true});
+  }
   grid.appendChild(b);
 });
 
 function openApp(p){
+  if (activeId && activeId !== p.id){
+    var prev = byId(activeId);
+    if (prev && prev.keep === false) drop(activeId);
+  }
+  activeId = p.id;
   document.body.classList.add('in-app');
   $('ttl').textContent = p.title;
   $('ext').href = p.open || p.url;
   $('note').textContent = p.note || '';
   $('note').hidden = !p.note;
   document.title = p.title + ' — Turkistan Science';
-  loading.classList.remove('done');
-  if (frame) frame.remove();
-  frame = document.createElement('iframe');
-  frame.title = p.title;
-  frame.setAttribute('allow', 'fullscreen; clipboard-read; clipboard-write; microphone; camera');
-  frame.setAttribute('allowfullscreen', '');
-  frame.addEventListener('load', function(){ loading.classList.add('done'); });
-  frame.src = p.url;
-  stage.appendChild(frame);
+  var e = ensure(p);
+  Object.keys(frames).forEach(function(id){ frames[id].el.classList.toggle('on', id === p.id); });
+  loading.classList.toggle('done', e.loaded);
+  placePool();
+  if (e.loaded) focusActive();
 }
 
 function closeApp(){
   document.body.classList.remove('in-app');
-  document.title = 'Turkistan Science — Muhammad Sodiq Shamsiddinov loyihalari';
-  if (frame){ frame.remove(); frame = null; }
+  document.title = 'Turkiston Science — Muhammad Sodiq Shamsiddinov loyihalari';
+  Object.keys(frames).forEach(function(id){ frames[id].el.classList.remove('on'); });
+  var p = activeId && byId(activeId);
+  if (p && p.keep === false) drop(activeId);   /* video/simulyator fonda ishlab qolmasin */
+  activeId = null;
+  placePool();
 }
 
 function route(){
-  var id = decodeURIComponent(location.hash.slice(1));
-  var p = PROJECTS.filter(function(x){ return x.id === id; })[0];
+  var p = byId(decodeURIComponent(location.hash.slice(1)));
   if (p) openApp(p); else closeApp();
 }
 
 $('back').addEventListener('click', function(){ location.hash = ''; history.replaceState(null,'',location.pathname + location.search); route(); });
 $('fs').addEventListener('click', function(){
-  var el = $('stage');
   if (document.fullscreenElement) document.exitFullscreen();
-  else if (el.requestFullscreen) el.requestFullscreen();
-  else if (frame && frame.webkitRequestFullscreen) frame.webkitRequestFullscreen();
+  else if (pool.requestFullscreen) pool.requestFullscreen();
+  else if (pool.webkitRequestFullscreen) pool.webkitRequestFullscreen();
 });
+document.addEventListener('fullscreenchange', function(){ if (!document.fullscreenElement) placePool(); });
 window.addEventListener('hashchange', route);
+
+/* Sahifa yuklangach, og‘ir dasturlarni birin-ketin fonda oldindan yuklaymiz */
+function idlePreload(){
+  var c = navigator.connection || {};
+  if (c.saveData || /(^|-)2g$/.test(c.effectiveType || '')) return;
+  var list = PROJECTS.filter(function(p){ return p.preload === 'idle'; }), i = 0;
+  (function next(){
+    if (i >= list.length) return;
+    ensure(list[i++]);
+    setTimeout(next, 2500);
+  })();
+}
+window.addEventListener('load', function(){ setTimeout(idlePreload, 800); });
+
 route();
 </script>
 </body>
