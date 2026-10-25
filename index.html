@@ -62,6 +62,9 @@ html.dz footer{border-top:0;padding-top:0}html.dz footer .foot{margin-top:28px}
 @media(max-width:820px){.hero-in{padding-top:min(92vw,380px)}}
 .loading.fx{background:transparent;z-index:9}.loading.fx.done{transition:none}#wc{position:absolute;inset:0;width:100%;height:100%;display:none}
 .loading.fx #wc{display:block}.loading.fx #lt{display:none}
+body.fs .topbar,body.fs .appbar,body.fs .note{display:none}
+#fsx{display:none;position:fixed;z-index:50;top:calc(var(--top) + 10px);right:10px;font:inherit;font-weight:700;font-size:.85rem;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.4);background:rgba(7,18,38,.78);color:#fff;cursor:pointer}
+body.fs #fsx{display:block}
 /* projects */
 .wrap{max-width:1140px;margin:0 auto;padding:44px 22px 56px;width:100%}
 .wrap h2{margin:34px 0 16px;font:400 1.55rem 'Marcellus',Georgia,serif}.wrap h2:first-child{margin-top:0}
@@ -127,7 +130,7 @@ body.in-app #pool{visibility:visible;pointer-events:auto}
 @media(max-width:820px){#plist{grid-template-columns:1fr;grid-template-rows:none;overflow:auto}.pl-list{overflow:visible}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.spin{animation:none}.app{transition:none}.app:hover{transform:none}}
 </style>
-<script src="design.js?v=5" defer></script>
+<script src="design.js?v=7" defer></script>
 </head>
 <body>
 <header class="topbar">
@@ -173,6 +176,7 @@ body.in-app #pool{visibility:visible;pointer-events:auto}
   <div class="band"></div>
   <div class="foot"><p>Turkistan Science — fizika va ilm-fan targ‘iboti. Yangiliklar va yangi loyihalar kanallarimizda e’lon qilinadi.</p><nav id="fnav" aria-label="Kanallarimiz"></nav></div>
 </footer>
+<button id="fsx" type="button">✕ Chiqish</button>
 <div id="pool"></div>
 <script>
 var $=function(id){return document.getElementById(id)};
@@ -349,7 +353,7 @@ function openApp(p){
  var e=ensure(p);frames[p.id].el.classList.add('on');
  warpStart(p);placePool();if(e.loaded)focusActive();}
 function closeApp(){
- warpStop();loading.classList.add('done');leave();activeId=null;document.body.classList.remove('in-app');
+ if(fsOn)setFS(0);warpStop();loading.classList.add('done');leave();activeId=null;document.body.classList.remove('in-app');
  document.title='Turkiston Science — Muhammad Sodiq Shamsiddinov loyihalari';
  Object.keys(frames).forEach(function(id){frames[id].el.classList.remove('on');});placePool();}
 function route(){var h=location.hash.slice(1);if(!/^[\w-]+$/.test(h))h='';var p=byId(h);if(p)openApp(p);else closeApp();syncBack();}
@@ -357,20 +361,23 @@ function goHome(){location.hash='';if(!TG)history.replaceState(null,'',location.
 $('back').addEventListener('click',goHome);
 /* ── Telegram Mini App: to‘liq ekran, orqaga tugmasi, havolalar ── */
 function syncBack(){if(TG&&TG.BackButton){activeId?TG.BackButton.show():TG.BackButton.hide();}}
-function fsLabel(){var on=TG?TG.isFullscreen:!!document.fullscreenElement;$('fs').textContent=on?'Ekrandan chiqish':'To‘liq ekran';}
+var fsOn=0;function fsLabel(){$('fs').textContent=fsOn?'Ekrandan chiqish':'To‘liq ekran';}
 (function(){
  if(!(/tgWebApp/.test(location.hash+location.search)||window.TelegramWebviewProxy))return;
  var s=document.createElement('script');s.src='https://telegram.org/js/telegram-web-app.js';
  s.onload=function(){var T=window.Telegram&&Telegram.WebApp;if(!T)return;TG=T;
   try{T.ready();T.expand();T.disableVerticalSwipes&&T.disableVerticalSwipes();T.setHeaderColor('#071226');T.setBackgroundColor('#071226');}catch(e){}
   try{if(T.BackButton)T.BackButton.onClick(function(){if(activeId)goHome();});
-   T.onEvent('fullscreenChanged',fsLabel);T.onEvent('fullscreenFailed',function(){$('fs').textContent='Bu Telegram versiyasida mavjud emas';});}catch(e){}
+   T.onEvent('fullscreenChanged',fsLabel);T.onEvent('fullscreenFailed',function(){});}catch(e){}
   fsLabel();syncBack();};
  document.head.appendChild(s);})();
-$('fs').addEventListener('click',function(){
- if(TG){try{if(TG.isFullscreen)TG.exitFullscreen();else if(TG.requestFullscreen)TG.requestFullscreen();else TG.expand();}catch(e){try{TG.expand();}catch(x){}}return;}
- if(document.fullscreenElement)document.exitFullscreen();else if(pool.requestFullscreen)pool.requestFullscreen();else if(pool.webkitRequestFullscreen)pool.webkitRequestFullscreen();});
-document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement)placePool();fsLabel();});
+function setFS(on){fsOn=on?1:0;document.body.classList.toggle('fs',!!on);
+ try{if(TG){if(on){TG.requestFullscreen&&TG.requestFullscreen();}else if(TG.isFullscreen&&TG.exitFullscreen)TG.exitFullscreen();}
+  else if(on){if(pool.requestFullscreen)pool.requestFullscreen();else if(pool.webkitRequestFullscreen)pool.webkitRequestFullscreen();}
+  else if(document.fullscreenElement)document.exitFullscreen();}catch(e){}
+ placePool();fsLabel();}
+$('fs').addEventListener('click',function(){setFS(!fsOn);});$('fsx').addEventListener('click',function(){setFS(0);});
+document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement){if(fsOn&&!TG)setFS(0);placePool();}fsLabel();});
 document.addEventListener('click',function(e){var a=TG&&e.target.closest&&e.target.closest('a[target=_blank]');if(!a)return;e.preventDefault();
  var u=a.href;if(/^https:\/\/t\.me\//.test(u)&&TG.openTelegramLink)TG.openTelegramLink(u);else TG.openLink(u);});
 addEventListener('hashchange',route);
