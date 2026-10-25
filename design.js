@@ -70,7 +70,7 @@ var P=[
  {n:'Makemake',a:1.43,r:.007,T:175,c:'#c98f6a',rgb:'200,140,105'},
  {n:'Erida',a:1.55,r:.0085,T:210,c:'#e6e2dc',rgb:'225,220,215'}];
 var belt=[],i;for(i=0;i<560;i++)belt.push({a:Math.random()*TAU,r:.5+Math.random()*.085,y:(Math.random()-.5)*.03,s:Math.random()*.9+.4});
-for(i=0;i<420;i++)belt.push({a:Math.random()*TAU,r:1.18+Math.random()*.4,y:(Math.random()-.5)*.08,s:Math.random()*.8+.3});
+for(i=0;i<200;i++)belt.push({a:Math.random()*TAU,r:1.18+Math.random()*.4,y:(Math.random()-.5)*.08,s:Math.random()*.8+.3});
 var CM=[{q:.25,Q:1.5,w:.6,T:45,m:1,i:.35},{q:.4,Q:1.35,w:2.5,T:30,m:3,i:-.5},{q:.15,Q:1.1,w:4.2,T:21,m:5,i:.2}];
 var F=function(a){return .3+(a-.15)*1.25;};
 P.forEach(function(p){p.a=F(p.a);});belt.forEach(function(b){b.r=F(b.r);});CM.forEach(function(c){c.q=F(c.q);c.Q=F(c.Q);});
@@ -78,6 +78,7 @@ var IN={Merkuriy:[.3,.8],Venera:[.16,2.1],Yer:[.06,0],Mars:[.17,1.2],Seres:[.45,
 P.forEach(function(p){var q=IN[p.n]||[0,0];p.inc=q[0];p.nod=q[1];});
 function pos(p,a){var u=Math.cos(a)*p.a,v=Math.sin(a)*p.a,ci=Math.cos(p.inc),cn=Math.cos(p.nod),sn=Math.sin(p.nod);return [u*cn-v*ci*sn,v*Math.sin(p.inc),u*sn+v*ci*cn];}
 var Vd=[.42,.78,-.46],ST=[];   /* tizimning fazodagi harakat yo‘nalishi; fon yulduzlari unga teskari suriladi */
+var SC=['#dfe8ff','#ffffff','#fff2dc','#ffd9a8','#ffb27a','#b5ceff'];
 var M=(function(){var ph=58*Math.PI/180,rl=-24*Math.PI/180,sP=Math.sin(ph),cP=Math.cos(ph),sR=Math.sin(rl),cR=Math.cos(rl);return [[cR,sR*cP,-sR*sP],[sR,-cR*cP,cR*sP],[0,sP,cP]];})(),mx=-99,my=-99,drag=null;
 function spin(th,fi){var c=Math.cos(th),s=Math.sin(th),i,a,b,d;for(i=0;i<3;i++){a=M[0][i];d=M[2][i];M[0][i]=a*c+d*s;M[2][i]=-a*s+d*c;}
   c=Math.cos(fi);s=Math.sin(fi);for(i=0;i<3;i++){b=M[1][i];d=M[2][i];M[1][i]=b*c+d*s;M[2][i]=-b*s+d*c;}}
@@ -93,7 +94,9 @@ function resize(){
   [[.2,.25,.7,'38,70,170',.30],[.85,.7,.6,'110,50,150',.18],[.5,.95,.6,'20,150,170',.15]].forEach(function(n){
     var g=b.createRadialGradient(W*n[0],H*n[1],0,W*n[0],H*n[1],Math.max(W,H)*n[2]);
     g.addColorStop(0,'rgba('+n[3]+','+n[4]+')');g.addColorStop(1,'rgba('+n[3]+',0)');b.fillStyle=g;b.fillRect(0,0,W,H);});
-  ST=[];for(var k=0,n=Math.round(W*H/(Q?2600:1700));k<n;k++){var dz=Math.random();ST.push({x:Math.random()*W,y:Math.random()*H,r:.3+dz*1.0,l:.25+dz*.75,al:Math.random()*.55+.3,p:Math.random()*6.3,s:.8+Math.random()*1.6,w:k%11===0});}
+  var k2,n2=Math.round(W*H/260);for(k2=0;k2<n2;k2++){b.globalAlpha=.07+.45*Math.pow(Math.random(),2);b.fillStyle=SC[(Math.random()*3)|0];b.fillRect(Math.random()*W,Math.random()*H,.8,.8);}
+  b.save();b.translate(W*.5,H*.5);b.rotate(-.45);var gb=b.createLinearGradient(0,-H*.3,0,H*.3);gb.addColorStop(0,'rgba(100,110,160,0)');gb.addColorStop(.5,'rgba(120,125,175,.12)');gb.addColorStop(1,'rgba(100,110,160,0)');b.fillStyle=gb;b.fillRect(-W,-H*.3,W*2,H*.6);b.restore();
+  ST=[];for(var k=0,n=Math.round(W*H/(Q?600:1800)),u,c;k<n;k++){u=Math.pow(Math.random(),5);c=Math.random();ST.push({x:Math.random()*W,y:Math.random()*H,r:.35+u*1.3,l:.2+.8*(.4*u+.6*Math.random()),al:Math.min(1,.2+.55*Math.random()+u*.6),p:Math.random()*6.3,s:.8+Math.random()*1.6,c:c<.34?0:c<.56?1:c<.72?2:c<.84?3:c<.9?4:5});}
   var w2=W>820,ex=w2?Math.min(W*.34,H*.47):Math.min(W*.44,(36+Math.min(W*.92,380))*.45),zx=w2?W*.7:W/2,zy=w2?H*.52:(36+Math.min(W*.92,380))*.5;
   zone.style.left=(zx-ex)+'px';zone.style.top=(zy-ex)+'px';zone.style.width=(2*ex)+'px';zone.style.height=(2*ex)+'px';
   draw(performance.now());
@@ -145,11 +148,11 @@ function draw(now){
   x.setTransform(DPR,0,0,DPR,0,0);x.globalAlpha=1;x.drawImage(bg,0,0,W,H);
   pr(0,0,0);var ox0=o.x,oy0=o.y;pr(Vd[0],Vd[1],Vd[2]);var vx=ox0-o.x,vy=oy0-o.y,vl=Math.hypot(vx,vy)||1,dts=Math.min(.05,(now-(draw.l||now))/1000);vx/=vl;vy/=vl;draw.l=now;
   ST.forEach(function(s){s.x+=vx*30*s.l*dts;s.y+=vy*30*s.l*dts;if(s.x<-3)s.x+=W+6;else if(s.x>W+3)s.x-=W+6;if(s.y<-3)s.y+=H+6;else if(s.y>H+3)s.y-=H+6;
-    x.globalAlpha=s.al*(s.p>3?.7+.3*Math.sin(t*s.s+s.p):1);x.fillStyle=s.w?'#ffe2a0':'#fff';x.fillRect(s.x,s.y,s.r*1.5,s.r*1.5);});
+    x.globalAlpha=s.al*(s.r>1?.75+.25*Math.sin(t*s.s+s.p):1);x.fillStyle=SC[s.c];x.fillRect(s.x,s.y,s.r*1.5,s.r*1.5);});
   x.globalAlpha=1;
   /* orbitalar */
-  x.lineWidth=1;x.strokeStyle='rgba(170,200,255,.08)';
-  P.forEach(function(p){x.beginPath();for(var k=0;k<=96;k++){var q=pos(p,k/96*TAU);pr(q[0],q[1],q[2]);k?x.lineTo(o.x,o.y):x.moveTo(o.x,o.y);}x.stroke();});
+  x.lineWidth=1;x.strokeStyle='rgba(170,200,255,.05)';
+  P.forEach(function(p){if(p.r<.012)return;x.beginPath();for(var k=0;k<=96;k++){var q=pos(p,k/96*TAU);pr(q[0],q[1],q[2]);k?x.lineTo(o.x,o.y):x.moveTo(o.x,o.y);}x.stroke();});
   /* asteroid kamari */
   if(Q){x.fillStyle='rgba(200,185,165,.55)';belt.forEach(function(b){var a=b.a+t*.045/Math.sqrt(b.r*b.r*b.r)*.12;pr(Math.cos(a)*b.r,b.y,Math.sin(a)*b.r);x.fillRect(o.x,o.y,b.s*o.k,b.s*o.k);});}
   /* chizilgan obyektlar (uzoqdan yaqinga) */
@@ -161,10 +164,10 @@ function draw(now){
     var a=j*1.9+t*TAU/p.T,q0=pos(p,a),X=q0[0],Y=q0[1],Z=q0[2];pr(X,Y,Z);
     var px=o.x,py=o.y,rad=Math.max(2,p.r*sc*3.9*o.k),d=o.d,spin=t*(1.4+j*.25);
     L.push({d:d,f:function(){
-      {var N=Q?30:14,span=Math.max(.22,Math.min(1.4,3.4/Math.pow(p.T,.62))),pp=[],k,q,f2;
-        for(k=0;k<=N;k++){q=pos(p,a-k/N*span*TAU);f2=k/N*.6;pr(q[0]-Vd[0]*f2,q[1]-Vd[1]*f2,q[2]-Vd[2]*f2);pp.push([o.x,o.y]);}
-        x.lineCap='round';x.lineWidth=Math.max(1,rad*.2);
-        for(k=1;k<=N;k++){x.strokeStyle=rgba(p.rgb,.5*(1-k/N));x.beginPath();x.moveTo(pp[k-1][0],pp[k-1][1]);x.lineTo(pp[k][0],pp[k][1]);x.stroke();}}
+      if(p.r>=.012){var N=Q?20:10,span=Math.max(.05,Math.min(.45,2.2/Math.pow(p.T,.9))),pp=[],k,q,f2,u;
+        for(k=0;k<=N;k++){q=pos(p,a-k/N*span*TAU);f2=k/N*.3;pr(q[0]-Vd[0]*f2,q[1]-Vd[1]*f2,q[2]-Vd[2]*f2);pp.push([o.x,o.y]);}
+        x.lineCap='round';
+        for(k=1;k<=N;k++){u=1-k/N;x.strokeStyle=rgba(p.rgb,.5*u*u);x.lineWidth=Math.max(.8,rad*.34*u);x.beginPath();x.moveTo(pp[k-1][0],pp[k-1][1]);x.lineTo(pp[k][0],pp[k][1]);x.stroke();}}
       if(p.ring)ringHalf(px,py,rad,rl,kk,ny<0);
       ball(px,py,rad,p,spin,sx,sy,rl);
       if(p.ring)ringHalf(px,py,rad,rl,kk,ny>=0);
