@@ -13,9 +13,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{--night:#071226;--lapis:#14346b;--turq:#1db3c3;--turq-l:#5fd6e2;--gold:#e6b450;
- --bg:#eef3f7;--surface:#fff;--ink:#0c1a33;--sub:#51627c;--line:#d3dde8;--bar-h:56px;
- --girih:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='22' viewBox='0 0 44 22'%3E%3Cpath d='M22 2 25 8 31 6 29 12 35 14 29 16 31 20 25 18 22 22 19 18 13 20 15 16 9 14 15 12 13 6 19 8Z' fill='none' stroke='%231db3c3' stroke-width='1'/%3E%3Ccircle cx='22' cy='11' r='2' fill='%23e6b450'/%3E%3C/svg%3E");
- color-scheme:light dark}
+ --bg:#eef3f7;--surface:#fff;--ink:#0c1a33;--sub:#51627c;--line:#d3dde8;--bar-h:56px;--top:calc(env(safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px));
+  color-scheme:light dark}
 @media(prefers-color-scheme:dark){:root{--bg:#0a1428;--surface:#0f1d38;--ink:#e8eef7;--sub:#9db0c9;--line:#243a5e}}
 *{box-sizing:border-box}
 html{height:100%;scroll-behavior:smooth}
@@ -24,7 +23,7 @@ body{margin:0;display:flex;flex-direction:column;min-height:100%;background:var(
 a{color:inherit}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
 /* topbar */
-.topbar{position:sticky;top:0;z-index:20;height:calc(var(--bar-h) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0) max(14px,env(safe-area-inset-right,0)) 0 max(14px,env(safe-area-inset-left,0));
+.topbar{position:sticky;top:0;z-index:20;height:calc(var(--bar-h) + var(--top));padding:var(--top) max(14px,env(safe-area-inset-right,0)) 0 max(14px,env(safe-area-inset-left,0));
  background:var(--night);color:#fff;display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--turq)}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;min-width:0}
 .brand img{width:34px;height:34px;border-radius:9px;background:var(--lapis);flex:none}
@@ -36,10 +35,10 @@ a{color:inherit}
 svg.i{width:16px;height:16px;flex:none}
 @media(max-width:620px){.brand b{font-size:1rem}.chan a span{display:none}.chan a{padding:8px 10px}}
 /* hero */
+.eq{display:flex;flex-wrap:wrap;gap:8px 26px;margin:32px 0 0;font:400 1.08rem 'Marcellus',Georgia,serif;color:rgba(255,255,255,.42)}
 main{flex:1;display:flex;flex-direction:column;min-height:0}
 #home{flex:1}
-.hero{position:relative;overflow:hidden;background:var(--night);color:#fff;padding:clamp(36px,6vw,72px) 0;min-height:min(84vh,720px);display:grid;align-items:center}
-#sky{position:absolute;inset:0;width:100%;height:100%}
+.hero{position:relative;overflow:hidden;background:#0e2552;border-bottom:4px solid var(--gold);color:#fff;padding:clamp(36px,6vw,72px) 0;min-height:min(84vh,720px);display:grid;align-items:center}
 .hero-in{position:relative;max-width:1140px;margin:0 auto;padding:0 22px;width:100%;display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center}
 .hero h1{margin:0;font:400 clamp(1.9rem,4.5vw,3.45rem)/1.13 'Marcellus',Georgia,serif;text-wrap:balance}
 .lead{margin:18px 0 26px;color:#b9c9e4;font-size:1.08rem;max-width:33em}
@@ -47,15 +46,17 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .btn{font:inherit;font-weight:700;text-decoration:none;padding:12px 22px;border-radius:12px;border:1.5px solid var(--gold);cursor:pointer}
 .btn.p{background:var(--gold);color:#1b1404}.btn.p:hover{background:#f0c56a}
 .btn.s{background:transparent;color:#fff}.btn.s:hover{background:rgba(230,180,80,.15)}
-.orrery{width:min(100%,500px);aspect-ratio:1;justify-self:center}
-.orrery svg{width:100%;height:100%;display:block}
-.rg{transform-box:view-box;transform-origin:center;animation:spin 240s linear infinite}
-.rg.b{animation-duration:150s;animation-direction:reverse}.rg.c{animation-duration:20s}.rg.d{animation-duration:36s;animation-direction:reverse}
 @keyframes spin{to{transform:rotate(360deg)}}
-.hero-in .copy>*{animation:rise .8s both}.hero-in .copy>:nth-child(2){animation-delay:.12s}.hero-in .copy>:nth-child(3){animation-delay:.24s}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}}
-.band{height:26px;background:var(--night) var(--girih) repeat-x center;border-bottom:2px solid var(--turq)}
-@media(max-width:820px){.hero-in{grid-template-columns:1fr}.orrery{width:min(78%,340px);order:-1}.hero{min-height:0}}
+@media(max-width:820px){.hero-in{grid-template-columns:1fr}.hframe{width:min(100%,420px);order:-1}.hero{min-height:0}}
+/* naqsh ramka + 3D osmon (design.js yoqadi) */
+.hframe{position:relative;width:min(100%,540px);aspect-ratio:560/440;justify-self:center;display:none}
+html.dz .hframe{display:block}
+.cosmos{position:absolute;left:20%;top:18.64%;width:60%;height:81.36%;border-radius:50% 50% 0 0/46.9% 46.9% 0 0;overflow:hidden;background:#030816}
+.cosmos canvas{width:100%;height:100%;display:block;cursor:grab;touch-action:pan-y}
+#frame{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.band{display:none;height:56px;background:var(--band) repeat-x center/auto 100%}
+html.dz .band{display:block}html.dz .hero{border-bottom:0}
+html.dz footer{border-top:0;padding-top:0}html.dz footer .foot{margin-top:28px}
 /* projects */
 .wrap{max-width:1140px;margin:0 auto;padding:44px 22px 56px;width:100%}
 .wrap h2{margin:34px 0 16px;font:400 1.55rem 'Marcellus',Georgia,serif}.wrap h2:first-child{margin-top:0}
@@ -77,9 +78,8 @@ main{flex:1;display:flex;flex-direction:column;min-height:0}
 .art svg{width:100%;display:block}
 @media(max-width:520px){.art{opacity:.35}}
 /* footer */
-footer{background:var(--night);color:#cfdaec;padding:0 0 calc(28px + env(safe-area-inset-bottom,0px))}
-footer .band{border-bottom:0;border-top:2px solid var(--turq);margin-bottom:26px}
-.foot{max-width:1140px;margin:0 auto;padding:0 22px;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:center;justify-content:space-between}
+footer{background:var(--night);color:#cfdaec;border-top:4px solid var(--gold);padding:30px 0 calc(28px + env(safe-area-inset-bottom,0px))}
+footer .foot{max-width:1140px;margin:0 auto;padding:0 22px;display:flex;flex-wrap:wrap;gap:18px 32px;align-items:center;justify-content:space-between}
 .foot p{margin:0;font-size:.9rem;max-width:30em}
 .foot nav{display:flex;flex-wrap:wrap;gap:10px}
 .foot nav a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:#fff;font-weight:600;font-size:.9rem;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.28)}
@@ -120,8 +120,9 @@ body.in-app #pool{visibility:visible;pointer-events:auto}
 .pli small{color:var(--sub)}
 #plmsg{margin:8px;font-size:.88rem;color:var(--sub)}
 @media(max-width:820px){#plist{grid-template-columns:1fr;grid-template-rows:none;overflow:auto}.pl-list{overflow:visible}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.rg,.spin,.hero-in .copy>*{animation:none}.app{transition:none}.app:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.spin{animation:none}.app{transition:none}.app:hover{transform:none}}
 </style>
+<script src="design.js" defer></script>
 </head>
 <body>
 <header class="topbar">
@@ -131,14 +132,14 @@ body.in-app #pool{visibility:visible;pointer-events:auto}
 <main>
   <section id="home">
     <div class="hero">
-      <canvas id="sky" aria-hidden="true"></canvas>
-      <div class="hero-in">
+            <div class="hero-in">
         <div class="copy">
           <h1>Turkiston Science kanali asoschisi Muhammad Sodiq Shamsiddinovning loyihalar majmuasi</h1>
           <p class="lead">Fizikani ko‘rib, sinab va o‘zingiz hisoblab o‘rganing: video darslar, 3D simulyatorlar va talabalar uchun dasturlar bir joyda.</p>
           <div class="cta"><a class="btn p" href="#loyihalar">Loyihalarni ochish</a><a class="btn s" href="#video-darslar">Video darslar</a></div>
+          <p class="eq" aria-hidden="true"><span>E = hν</span><span>∇×E = −∂B/∂t</span><span>iħ ∂ψ/∂t = Ĥψ</span></p>
         </div>
-        <div class="orrery" id="orr"></div>
+        <div class="hframe" aria-hidden="true"><div class="cosmos"><canvas id="cv"></canvas></div><svg id="frame"></svg></div>
       </div>
     </div>
     <div class="band"></div>
@@ -170,6 +171,7 @@ body.in-app #pool{visibility:visible;pointer-events:auto}
 <div id="pool"></div>
 <script>
 var $=function(id){return document.getElementById(id)};
+var TG=null,activeId=null;
 var SVG={tg:'<path d="M21.9 4.3 18.7 19.5c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6.1 13.1 1.2 11.6c-1.1-.3-1.1-1 .2-1.5L20.5 2.7c.9-.3 1.7.2 1.4 1.6Z"/>',
  yt:'<path d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.900.5A3 3 0 0 0 1 7.200C.5 9.100.5 12 .5 12s0 2.900.5 4.800a3 3 0 0 0 2.100 2.100c1.900.5 8.900.5 8.900.5s7 0 8.900-.5a3 3 0 0 0 2.100-2.100c.5-1.900.5-4.800.5-4.800s0-2.900-.5-4.800ZM9.700 15.500v-7l6 3.500-6 3.500Z"/>'};
 /* ── Kanallar (tepada va pastda bir xil ro‘yxatdan) ── */
@@ -202,7 +204,7 @@ var PROJECTS=[
   desc:'Plastinkalar laboratoriya ishining interaktiv 3D simulyatori (GlowScript).',
   url:'https://www.glowscript.org/#/user/fizikdasturchi/folder/MyPrograms/program/Plastinkalar',icon:'plates',color:'#0f7c8a',
   note:'Simulyator bu yerda ochilmasa, "Yangi oynada" tugmasini bosing.'},
- {id:'quiz',preload:'idle',title:'Quiz Web test platformasi',desc:'Word (.docx) faylidagi savollardan test tuzib, ishlash platformasi.',
+ {id:'quiz',preload:'idle',title:'Quiz Web test platformasi',desc:'Word (.docx) fayldagi savollardan HEMIS’dagi testga aynan o‘xshash, tayyor test tuzib beruvchi dastur.',
   url:'https://muhammadsodiq0825-ux.github.io/QuizWeb/',icon:'quiz',color:'#5a3f8f'},
  {id:'kutubxona',preload:'idle',title:'Fizika kutubxonasi',desc:'Fizika fakulteti uchun onlayn kutubxona: bo‘limlar bo‘yicha materiallar.',
   url:'https://fizikdasturchi.github.io/OnlineLabaratory/',icon:'book',color:'#14346b'},
@@ -211,26 +213,8 @@ var PROJECTS=[
  {id:'kalkulyator',preload:'idle',title:'Laboratoriya kalkulyatori',desc:'Laboratoriya ishlari natijalarini hisoblash platformasi.',
   url:'https://muhammadsodiq0825-ux.github.io/NewApp/',icon:'calc',color:'#0f7c8a'}];
 /* ── Bosh sahifa: orrery (astrolyabiya) va yulduzli osmon ── */
-function star(R,r,n,rot){var p=[];for(var i=0;i<n*2;i++){var a=Math.PI*i/n+(rot||0),d=i%2?r:R;p.push((Math.cos(a)*d).toFixed(1)+','+(Math.sin(a)*d).toFixed(1));}return p.join(' ');}
-(function(){var s='<defs><radialGradient id="sg"><stop offset="0" stop-color="#fff3c4"/><stop offset=".45" stop-color="#e6b450"/><stop offset="1" stop-color="#e6b450" stop-opacity="0"/></radialGradient></defs>',t='',i,m='';
- for(i=0;i<72;i++){var a=i*Math.PI/36,L=i%3?7:15,c=Math.cos(a),n=Math.sin(a);t+='<line x1="'+(c*285).toFixed(1)+'" y1="'+(n*285).toFixed(1)+'" x2="'+(c*(285-L)).toFixed(1)+'" y2="'+(n*(285-L)).toFixed(1)+'"/>';}
- for(i=0;i<12;i++){var b=i*Math.PI/6;m+='<polygon transform="translate('+(Math.cos(b)*246).toFixed(1)+' '+(Math.sin(b)*246).toFixed(1)+') rotate('+(i*30)+')" points="'+star(13,6,4,0)+'"/>';}
- s+='<g class="rg" stroke="#e6b450" stroke-opacity=".6" stroke-width="1.2"><circle r="285" fill="none"/>'+t+'</g>';
- s+='<g class="rg b" fill="none" stroke="#36c2cf" stroke-width="1.3"><circle r="226" stroke-opacity=".35"/>'+m+'<polygon points="'+star(205,150,8,.2)+'" stroke="#e6b450" stroke-opacity=".75"/></g>';
- s+='<g fill="none" stroke="#fff" stroke-opacity=".16"><circle r="118"/><circle r="160"/></g>';
- s+='<g class="rg c"><circle cx="118" r="7" fill="#36c2cf"/></g><g class="rg d"><circle cx="-160" r="5.5" fill="#e6b450"/><circle cx="-160" r="10" fill="none" stroke="#e6b450" stroke-opacity=".5"/></g>';
- s+='<circle r="46" fill="url(#sg)"/><polygon points="'+star(26,12,8,0)+'" fill="#fff6d6"/>';
- $('orr').innerHTML='<svg viewBox="-300 -300 600 600" aria-hidden="true">'+s+'</svg>';})();
-(function(){var c=$('sky'),x=c.getContext('2d'),S=[],W,H,raf=0,on=true,last=0,still=matchMedia('(prefers-reduced-motion:reduce)').matches;
- function size(){var d=Math.min(devicePixelRatio||1,2);W=c.clientWidth;H=c.clientHeight;if(!W)return;c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0);S=[];
-  for(var i=0,n=W<700?55:95;i<n;i++)S.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.3,p:Math.random()*6.3,s:.4+Math.random()*1.2});draw(0);}
- function draw(t){x.clearRect(0,0,W,H);for(var i=0;i<S.length;i++){var s=S[i];x.globalAlpha=.3+.7*Math.abs(Math.sin(t/1000*s.s*.6+s.p));x.fillStyle=i%9?'#fff':'#f3cd7a';x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill();}}
- function loop(t){raf=requestAnimationFrame(loop);if(t-last<33)return;last=t;draw(t);}
- function go(){var want=on&&!document.hidden&&!still;if(want&&!raf)raf=requestAnimationFrame(loop);else if(!want&&raf){cancelAnimationFrame(raf);raf=0;}}
- if(window.IntersectionObserver)new IntersectionObserver(function(e){on=e[0].isIntersecting;go();}).observe(c);
- document.addEventListener('visibilitychange',go);addEventListener('resize',function(){size();});size();go();})();
 /* ── Dasturlar (iframe) boshqaruvi ── */
-var pool=$('pool'),stage=$('stage'),loading=$('loading'),frames={},activeId=null;
+var pool=$('pool'),stage=$('stage'),loading=$('loading'),frames={};
 var logo=$('logo');function logoFallback(){logo.onerror=null;logo.src=document.querySelector('link[type="image/svg+xml"]').href;}
 logo.onerror=logoFallback;if(logo.complete&&logo.naturalWidth===0)logoFallback();
 function byId(id){return PROJECTS.filter(function(x){return x.id===id})[0]}
@@ -248,8 +232,13 @@ function placePool(){
  if(document.body.classList.contains('in-app')){var r=stage.getBoundingClientRect();pool.style.left=r.left+'px';pool.style.top=r.top+'px';pool.style.width=r.width+'px';pool.style.height=r.height+'px';}
  else{pool.style.left='0';pool.style.top='0';pool.style.width='100vw';pool.style.height='100vh';}}
 addEventListener('resize',placePool);if(window.ResizeObserver)new ResizeObserver(placePool).observe(stage);
-/* ── Pleylist (YouTube IFrame API) ── */
-var PL={ids:null,titles:{},player:null,timer:0,q:[],loading:false};
+/* ── Pleylist (YouTube IFrame API) — oxirgi ko‘rilgan joyni eslab qoladi ── */
+var PL={ids:null,titles:{},player:null,timer:0,saver:0,q:[],loading:false,sv:null},SKEY='ts_pl_v1';
+function plLoad(){try{return JSON.parse(localStorage.getItem(SKEY))}catch(e){return null}}
+function plSave(){var Y=PL.player;if(!Y||!Y.getPlaylistIndex)return;
+ try{var st=Y.getPlayerState();if(st===5||st===-1)return;
+  var i=Y.getPlaylistIndex(),v=(Y.getVideoData()||{}).video_id,t=st===0?0:Math.floor(Y.getCurrentTime()||0);
+  if(i>=0&&v){PL.sv={i:i,v:v,t:t};localStorage.setItem(SKEY,JSON.stringify(PL.sv));}}catch(e){}}
 function ytReady(cb){
  if(window.YT&&YT.Player)return cb();
  PL.q.push(cb);if(PL.loading)return;PL.loading=true;
@@ -258,25 +247,35 @@ function ytReady(cb){
 function plFail(){$('plmsg').innerHTML='Ro‘yxat yuklanmadi. <a href="'+byId('video-darslar').open+'" target="_blank" rel="noopener">Pleylistni YouTube’da oching</a>.';}
 function plRender(){
  var h='';PL.ids.forEach(function(id,i){h+='<button class="pli" type="button" data-i="'+i+'"><img loading="lazy" alt="" src="https://i.ytimg.com/vi/'+id+'/mqdefault.jpg"><span><b>'+(PL.titles[id]||(i+1)+'-dars')+'</b><small>'+(i+1)+'-dars</small></span></button>';});
- $('pli').innerHTML=h;$('plmsg').textContent='';plMark();}
-function plMark(){var i=-1;try{i=PL.player.getPlaylistIndex();}catch(e){}
+ $('pli').innerHTML=h;$('plmsg').textContent=PL.sv?'Davom ettirish: '+(PL.sv.i+1)+'-dars':'';plMark();}
+function plMark(){var i=-1;try{i=PL.player.getPlaylistIndex();}catch(e){}if(!(i>=0)&&PL.sv)i=PL.sv.i;
  [].forEach.call($('pli').children,function(b,k){b.classList.toggle('on',k===i);});}
+function plState(){plMark();plSave();}
 function plTitles(){PL.ids.forEach(function(id){if(PL.titles[id])return;
  fetch('https://www.youtube.com/oembed?format=json&url='+encodeURIComponent('https://www.youtube.com/watch?v='+id)).then(function(r){return r.json()})
  .then(function(j){PL.titles[id]=j.title;var i=PL.ids.indexOf(id),b=$('pli').children[i];if(b)b.querySelector('b').textContent=j.title;}).catch(function(){});});}
 $('pli').addEventListener('click',function(e){var b=e.target.closest('.pli');if(!b||!PL.player)return;
  try{PL.player.playVideoAt(+b.dataset.i);}catch(x){}$('plist').scrollTo&&$('plist').scrollTo({top:0});});
 function openPlaylist(p){
+ PL.sv=plLoad();var sv=PL.sv;
  $('plist').classList.add('show');$('plbox').innerHTML='<div id="plyr"></div>';
  if(PL.ids)plRender();else{$('pli').innerHTML='';$('plmsg').textContent='Darslar ro‘yxati yuklanmoqda…';}
+ function cue(i,t){try{PL.player.cuePlaylist({listType:'playlist',list:p.list,index:i,startSeconds:t||0});}catch(e){}}
  ytReady(function(){
   PL.player=new YT.Player('plyr',{width:'100%',height:'100%',playerVars:{listType:'playlist',list:p.list,rel:0,playsinline:1},
-   events:{onReady:function(){var n=0;clearInterval(PL.timer);PL.timer=setInterval(function(){var a=null;try{a=PL.player.getPlaylist();}catch(e){}
-     if(a&&a.length){clearInterval(PL.timer);PL.ids=a;plRender();plTitles();}else if(++n>25){clearInterval(PL.timer);if(!PL.ids)plFail();}},600);},
-    onStateChange:plMark}});});}
-function closePlaylist(){clearInterval(PL.timer);
+   events:{onReady:function(){
+     if(sv)cue(sv.i,sv.t);
+     var n=0;clearInterval(PL.timer);PL.timer=setInterval(function(){var a=null;try{a=PL.player.getPlaylist();}catch(e){}
+      if(a&&a.length){clearInterval(PL.timer);PL.ids=a;
+       if(sv&&a[sv.i]!==sv.v){var j=a.indexOf(sv.v);if(j>=0){sv.i=j;cue(j,sv.t);}}
+       plRender();plTitles();}
+      else if(++n>25){clearInterval(PL.timer);if(!PL.ids)plFail();}},600);
+     clearInterval(PL.saver);PL.saver=setInterval(plSave,4000);},
+    onStateChange:plState}});});}
+function closePlaylist(){clearInterval(PL.timer);clearInterval(PL.saver);plSave();
  if(PL.player){try{PL.player.destroy();}catch(e){}PL.player=null;}
  $('plbox').innerHTML='';$('plist').classList.remove('show');}
+addEventListener('pagehide',plSave);document.addEventListener('visibilitychange',function(){if(document.hidden)plSave();});
 /* ── Kartalar ── */
 PROJECTS.forEach(function(p){
  var b=document.createElement('button');b.className='app'+(p.feat?' feat':'');b.type='button';
@@ -300,10 +299,27 @@ function closeApp(){
  leave();activeId=null;document.body.classList.remove('in-app');
  document.title='Turkiston Science — Muhammad Sodiq Shamsiddinov loyihalari';
  Object.keys(frames).forEach(function(id){frames[id].el.classList.remove('on');});placePool();}
-function route(){var p=byId(decodeURIComponent(location.hash.slice(1)));if(p)openApp(p);else closeApp();}
-$('back').addEventListener('click',function(){location.hash='';history.replaceState(null,'',location.pathname+location.search);route();});
-$('fs').addEventListener('click',function(){if(document.fullscreenElement)document.exitFullscreen();else if(pool.requestFullscreen)pool.requestFullscreen();else if(pool.webkitRequestFullscreen)pool.webkitRequestFullscreen();});
-document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement)placePool();});
+function route(){var h=location.hash.slice(1);if(!/^[\w-]+$/.test(h))h='';var p=byId(h);if(p)openApp(p);else closeApp();syncBack();}
+function goHome(){location.hash='';if(!TG)history.replaceState(null,'',location.pathname+location.search);route();}
+$('back').addEventListener('click',goHome);
+/* ── Telegram Mini App: to‘liq ekran, orqaga tugmasi, havolalar ── */
+function syncBack(){if(TG&&TG.BackButton){activeId?TG.BackButton.show():TG.BackButton.hide();}}
+function fsLabel(){var on=TG?TG.isFullscreen:!!document.fullscreenElement;$('fs').textContent=on?'Ekrandan chiqish':'To‘liq ekran';}
+(function(){
+ if(!(/tgWebApp/.test(location.hash+location.search)||window.TelegramWebviewProxy))return;
+ var s=document.createElement('script');s.src='https://telegram.org/js/telegram-web-app.js';
+ s.onload=function(){var T=window.Telegram&&Telegram.WebApp;if(!T)return;TG=T;
+  try{T.ready();T.expand();T.disableVerticalSwipes&&T.disableVerticalSwipes();T.setHeaderColor('#071226');T.setBackgroundColor('#071226');}catch(e){}
+  try{if(T.BackButton)T.BackButton.onClick(function(){if(activeId)goHome();});
+   T.onEvent('fullscreenChanged',fsLabel);T.onEvent('fullscreenFailed',function(){$('fs').textContent='Bu Telegram versiyasida mavjud emas';});}catch(e){}
+  fsLabel();syncBack();};
+ document.head.appendChild(s);})();
+$('fs').addEventListener('click',function(){
+ if(TG){try{if(TG.isFullscreen)TG.exitFullscreen();else if(TG.requestFullscreen)TG.requestFullscreen();else TG.expand();}catch(e){try{TG.expand();}catch(x){}}return;}
+ if(document.fullscreenElement)document.exitFullscreen();else if(pool.requestFullscreen)pool.requestFullscreen();else if(pool.webkitRequestFullscreen)pool.webkitRequestFullscreen();});
+document.addEventListener('fullscreenchange',function(){if(!document.fullscreenElement)placePool();fsLabel();});
+document.addEventListener('click',function(e){var a=TG&&e.target.closest&&e.target.closest('a[target=_blank]');if(!a)return;e.preventDefault();
+ var u=a.href;if(/^https:\/\/t\.me\//.test(u)&&TG.openTelegramLink)TG.openTelegramLink(u);else TG.openLink(u);});
 addEventListener('hashchange',route);
 /* og‘ir dasturlarni sahifa tinchigach, birin-ketin fonda oldindan yuklash */
 function idlePreload(){var c=navigator.connection||{};if(c.saveData||/(^|-)2g$/.test(c.effectiveType||''))return;
