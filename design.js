@@ -28,11 +28,22 @@ function latCell(){
   [[0,0],[36,0],[0,36],[36,36]].forEach(function(c){s+='<path transform="translate('+c[0]+' '+c[1]+')" d="M0-4.500 4.500 0 0 4.500-4.500 0Z" fill="'+C.tur+'"/>';});
   return s;
 }
-/* gorizontal lenta (bo‘limlar orasida) */
+/* gorizontal lenta: 12 qirrali yulduz (girih) koshini */
 (function(){
-  var s='<svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 64 64">'+rosCell()+
-    '<rect width="64" height="5" fill="'+C.cob+'"/><rect y="5" width="64" height="2" fill="'+C.ivo+'"/><rect y="57" width="64" height="2" fill="'+C.ivo+'"/><rect y="59" width="64" height="5" fill="'+C.cob+'"/></svg>';
-  R.style.setProperty('--band','url("data:image/svg+xml,'+encodeURIComponent(s)+'")');
+  var O=[],P2=Math.PI;
+  function pt(r,a){return (r*Math.cos(a)).toFixed(1)+' '+(r*Math.sin(a)).toFixed(1);}
+  function star(n,ro,ri,t){var s='',k;for(k=0;k<2*n;k++)s+=(k?'L':'M')+pt(k%2?ri:ro,t+k*P2/n);return s+'Z';}
+  function sh(p,a,f,tx){O.push([p,a||0,tx||'']);return '<path d="'+p+'" fill="'+f+'" transform="'+(tx||'')+'rotate('+(a||0)+')"/>';}
+  var s='<rect x="-354" y="-354" width="708" height="708" fill="#14aee8"/>',i,c;
+  s+=sh(star(12,310,310,0),0,'#bfe4f7');
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(function(q){s+=sh(star(8,74,34,.39),0,'#2b2e9b','translate('+q[0]*248+' '+q[1]*248+') ');});
+  for(i=0;i<12;i++)s+=sh('M-40 -222L-28 -290L28 -290L40 -222L30 -203L-30 -203Z',15+30*i,'#17a58e');
+  for(i=0;i<12;i++)s+=sh('M0 -92L-30 -124L-30 -200L-21 -214L21 -214L30 -200L30 -124Z',30*i,'#1478d0');
+  s+=sh(star(12,112,60,0),0,'#c2172d')+sh(star(12,68,45,P2/12),0,'#b6defa');
+  O.push(['M-340 -340H340V340H-340Z',0,''],['M-300 -300H300V300H-300Z',0,'']);
+  [['#8c9db0',13],['#fff',8.5]].forEach(function(k){O.forEach(function(o){s+='<path d="'+o[0]+'" fill="none" stroke="'+k[0]+'" stroke-width="'+k[1]+'" stroke-linejoin="round" transform="'+o[2]+'rotate('+o[1]+')"/>';});});
+  var t='<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="-354 -354 708 708">'+s+'</svg>';
+  R.style.setProperty('--band','url("data:image/svg+xml,'+encodeURIComponent(t)+'")');
   R.classList.add('dz');
 })();
 /* peshtoq (ark) ramka — 3D osmon "deraza"si atrofida */
@@ -58,16 +69,19 @@ var box=cv.parentNode,W=0,H=0,DPR=1,Q=1,bg=null,tw=[];
 var TAU=Math.PI*2,still=matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* sayyoralar: orbita, hajm (ko‘rinish uchun kattalashtirilgan), davr (soniya), rang va sirt */
 var P=[
- {n:'Merkuriy',a:.2,r:.011,T:7,c:'#a59f98',rgb:'170,164,157',bl:[[0,.2,.3,.2,'#6f6a64',.5,1],[2,-.3,.25,.18,'#7d7872',.5,1],[4,.1,.2,.15,'#6f6a64',.5,1]]},
- {n:'Venera',a:.31,r:.019,T:11,c:'#e7ca90',rgb:'231,202,144',atm:'255,214,140',bd:[[-.5,.3,'#f4e2b4',.5],[0,.3,'#c9a56a',.35],[.5,.3,'#f4e2b4',.5]]},
- {n:'Yer',a:.43,r:.021,T:15,c:'#2a64ad',rgb:'80,150,230',atm:'110,180,255',moon:1,cap:1,
-   bl:[[0,.15,.55,.4,'#4f9a5a',.95,1],[2.2,-.35,.45,.32,'#4f9a5a',.95,1],[4.1,.45,.5,.25,'#5aa862',.9,1],[1,.5,.6,.15,'#fff',.4,1.6],[3.3,-.1,.6,.13,'#fff',.4,1.6],[5.4,.2,.5,.13,'#fff',.35,1.6]]},
- {n:'Mars',a:.55,r:.015,T:21,c:'#c4593a',rgb:'210,110,70',cap:1,bl:[[.5,.1,.5,.3,'#8c3826',.65,1],[2.6,-.2,.45,.25,'#8c3826',.65,1],[4.5,.3,.4,.2,'#a84630',.55,1]]},
- {n:'Yupiter',a:.76,r:.052,T:38,c:'#d3ac80',rgb:'211,172,128',
+ {n:'Merkuriy',a:.15,r:.009,T:6,c:'#a59f98',rgb:'170,164,157',bl:[[0,.2,.3,.2,'#6f6a64',.5,1],[2,-.3,.25,.18,'#7d7872',.5,1]]},
+ {n:'Venera',a:.23,r:.016,T:9.5,c:'#e7ca90',rgb:'231,202,144',atm:'255,214,140',bd:[[-.5,.3,'#f4e2b4',.5],[0,.3,'#c9a56a',.35],[.5,.3,'#f4e2b4',.5]]},
+ {n:'Yer',a:.31,r:.017,T:13,c:'#2a64ad',rgb:'80,150,230',atm:'110,180,255',moon:1,cap:1,
+   bl:[[0,.15,.55,.4,'#4f9a5a',.95,1],[2.2,-.35,.45,.32,'#4f9a5a',.95,1],[4.1,.45,.5,.25,'#5aa862',.9,1],[1,.5,.6,.15,'#fff',.4,1.6],[3.3,-.1,.6,.13,'#fff',.4,1.6]]},
+ {n:'Mars',a:.39,r:.012,T:18,c:'#c4593a',rgb:'210,110,70',cap:1,bl:[[.5,.1,.5,.3,'#8c3826',.65,1],[2.6,-.2,.45,.25,'#8c3826',.65,1],[4.5,.3,.4,.2,'#a84630',.55,1]]},
+ {n:'Yupiter',a:.66,r:.044,T:34,c:'#d3ac80',rgb:'211,172,128',
    bd:[[-.78,.16,'#a8734d',.5],[-.5,.14,'#ecd7b6',.5],[-.22,.18,'#a8734d',.55],[.06,.14,'#ecd7b6',.5],[.3,.17,'#b07a52',.55],[.6,.16,'#ecd7b6',.45]],bl:[[1.2,.28,.3,.13,'#b4503a',.85,1]]},
- {n:'Saturn',a:.97,r:.04,T:58,c:'#e4d0a0',rgb:'228,208,160',ring:1,
-   bd:[[-.6,.2,'#c9b27c',.4],[-.2,.2,'#f1e4bc',.4],[.2,.2,'#c9b27c',.4],[.6,.2,'#f1e4bc',.35]]}];
-var belt=[],i;for(i=0;i<260;i++)belt.push({a:Math.random()*TAU,r:.625+Math.random()*.085,y:(Math.random()-.5)*.03,s:Math.random()*.9+.4});
+ {n:'Saturn',a:.84,r:.036,T:52,c:'#e4d0a0',rgb:'228,208,160',ring:1,
+   bd:[[-.6,.2,'#c9b27c',.4],[-.2,.2,'#f1e4bc',.4],[.2,.2,'#c9b27c',.4],[.6,.2,'#f1e4bc',.35]]},
+ {n:'Uran',a:.99,r:.024,T:76,c:'#8fd9e0',rgb:'143,217,224',atm:'170,235,245',bd:[[-.3,.4,'#b5ecf1',.4],[.4,.3,'#74c5d0',.35]]},
+ {n:'Neptun',a:1.12,r:.023,T:100,c:'#3a5fd6',rgb:'70,100,220',atm:'110,150,255',bd:[[-.5,.2,'#5d82ee',.5],[.1,.16,'#2a46b0',.5],[.5,.18,'#5d82ee',.4]],bl:[[1.5,.2,.3,.12,'#1c2f8a',.7,1]]},
+ {n:'Pluton',a:1.23,r:.008,T:130,c:'#c9b39a',rgb:'200,180,155',bl:[[0,.2,.4,.3,'#8f7a66',.6,1]]}];
+var belt=[],i;for(i=0;i<260;i++)belt.push({a:Math.random()*TAU,r:.5+Math.random()*.085,y:(Math.random()-.5)*.03,s:Math.random()*.9+.4});
 var cam={p:58,r:-24,tp:58,tr:-24,t:-1e9},mx=-99,my=-99,drag=null;
 
 function resize(){
@@ -131,7 +145,7 @@ function draw(now){
   if(now-cam.t>4500){cam.tp+=(58-cam.tp)*.02;cam.tr+=(-24-cam.tr)*.02;}
   cam.p+=(cam.tp-cam.p)*.12;cam.r+=(cam.tr-cam.r)*.12;
   var ph=(cam.p+Math.sin(t*.35)*2.5)*Math.PI/180,sP=Math.sin(ph),cP=Math.cos(ph),rl=cam.r*Math.PI/180,sR=Math.sin(rl),cR=Math.cos(rl),
-      cx=W/2,cy=H*.53,sc=Math.min(W*.5,H*.62)*.97,o={};
+      wd=W>820,cx=wd?W*.7:W/2,cy=wd?H*.52:H*.31,sc=(wd?Math.min(W*.34,H*.47):Math.min(W*.46,H*.27))/1.22,o={};
   function pr(X,Y,Z){var sy=Z*sP-Y*cP,d=Z*cP+Y*sP,k=1/(1-d*.38),x1=X*cR-sy*sR,y1=X*sR+sy*cR;o.x=cx+x1*k*sc;o.y=cy+y1*k*sc;o.k=k;o.d=d;return o;}
   x.setTransform(DPR,0,0,DPR,0,0);x.globalAlpha=1;x.drawImage(bg,0,0,W,H);
   tw.forEach(function(s){x.globalAlpha=.25+.75*Math.abs(Math.sin(t*s.s+s.p));x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,TAU);x.fill();});
