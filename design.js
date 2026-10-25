@@ -135,7 +135,7 @@ function draw(now){
   if(now-cam.t>4500){cam.tp+=(58-cam.tp)*.02;cam.tr+=(-24-cam.tr)*.02;}
   cam.p+=(cam.tp-cam.p)*.12;cam.r+=(cam.tr-cam.r)*.12;
   var ph=(cam.p+Math.sin(t*.35)*2.5)*Math.PI/180,sP=Math.sin(ph),cP=Math.cos(ph),rl=cam.r*Math.PI/180,sR=Math.sin(rl),cR=Math.cos(rl),
-      wd=W>820,cx=wd?W*.7:W/2,cy=wd?H*.52:H*.31,sc=(wd?Math.min(W*.34,H*.47):Math.min(W*.46,H*.27))/1.62,o={};
+      wd=W>820,cx=wd?W*.7:W/2,cy=wd?H*.52:(36+Math.min(W*.92,380))*.5,sc=(wd?Math.min(W*.34,H*.47):Math.min(W*.44,(36+Math.min(W*.92,380))*.45))/1.62,o={};
   function pr(X,Y,Z){var sy=Z*sP-Y*cP,d=Z*cP+Y*sP,k=1/(1-d*.38),x1=X*cR-sy*sR,y1=X*sR+sy*cR;o.x=cx+x1*k*sc;o.y=cy+y1*k*sc;o.k=k;o.d=d;return o;}
   x.setTransform(DPR,0,0,DPR,0,0);x.globalAlpha=1;x.drawImage(bg,0,0,W,H);
   tw.forEach(function(s){x.globalAlpha=.25+.75*Math.abs(Math.sin(t*s.s+s.p));x.fillStyle='#fff';x.beginPath();x.arc(s.x,s.y,s.r,0,TAU);x.fill();});
