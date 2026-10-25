@@ -78,7 +78,11 @@ var IN={Merkuriy:[.3,.8],Venera:[.16,2.1],Yer:[.06,0],Mars:[.17,1.2],Seres:[.45,
 P.forEach(function(p){var q=IN[p.n]||[0,0];p.inc=q[0];p.nod=q[1];});
 function pos(p,a){var u=Math.cos(a)*p.a,v=Math.sin(a)*p.a,ci=Math.cos(p.inc),cn=Math.cos(p.nod),sn=Math.sin(p.nod);return [u*cn-v*ci*sn,v*Math.sin(p.inc),u*sn+v*ci*cn];}
 var Vd=[.42,.78,-.46],ST=[];   /* tizimning fazodagi harakat yo‘nalishi; fon yulduzlari unga teskari suriladi */
-var cam={p:58,r:-24,tp:58,tr:-24,t:-1e9},mx=-99,my=-99,drag=null;
+var M=(function(){var ph=58*Math.PI/180,rl=-24*Math.PI/180,sP=Math.sin(ph),cP=Math.cos(ph),sR=Math.sin(rl),cR=Math.cos(rl);return [[cR,sR*cP,-sR*sP],[sR,-cR*cP,cR*sP],[0,sP,cP]];})(),mx=-99,my=-99,drag=null;
+function spin(th,fi){var c=Math.cos(th),s=Math.sin(th),i,a,b,d;for(i=0;i<3;i++){a=M[0][i];d=M[2][i];M[0][i]=a*c+d*s;M[2][i]=-a*s+d*c;}
+  c=Math.cos(fi);s=Math.sin(fi);for(i=0;i<3;i++){b=M[1][i];d=M[2][i];M[1][i]=b*c+d*s;M[2][i]=-b*s+d*c;}}
+var zone=D.createElement('div');zone.style.cssText='position:absolute;z-index:0;touch-action:none;cursor:grab';box.appendChild(zone);
+function EL(ev,fn){cv.addEventListener(ev,fn);zone.addEventListener(ev,fn);}
 
 function resize(){
   W=box.clientWidth;H=box.clientHeight;if(!W||!H)return;
@@ -90,6 +94,8 @@ function resize(){
     var g=b.createRadialGradient(W*n[0],H*n[1],0,W*n[0],H*n[1],Math.max(W,H)*n[2]);
     g.addColorStop(0,'rgba('+n[3]+','+n[4]+')');g.addColorStop(1,'rgba('+n[3]+',0)');b.fillStyle=g;b.fillRect(0,0,W,H);});
   ST=[];for(var k=0,n=Math.round(W*H/(Q?2600:1700));k<n;k++){var dz=Math.random();ST.push({x:Math.random()*W,y:Math.random()*H,r:.3+dz*1.0,l:.25+dz*.75,al:Math.random()*.55+.3,p:Math.random()*6.3,s:.8+Math.random()*1.6,w:k%11===0});}
+  var w2=W>820,ex=w2?Math.min(W*.34,H*.47):Math.min(W*.44,(36+Math.min(W*.92,380))*.45),zx=w2?W*.7:W/2,zy=w2?H*.52:(36+Math.min(W*.92,380))*.5;
+  zone.style.left=(zx-ex)+'px';zone.style.top=(zy-ex)+'px';zone.style.width=(2*ex)+'px';zone.style.height=(2*ex)+'px';
   draw(performance.now());
 }
 
@@ -133,12 +139,9 @@ function sun(px,py,rs,t){
 function draw(now){
   if(!W)return;
   var t=now/1000;
-  /* kamera: sichqoncha bilan tortilganda o‘zgaradi, keyin asta joyiga qaytadi */
-  if(now-cam.t>4500){cam.tp+=(58-cam.tp)*.02;cam.tr+=(-24-cam.tr)*.02;}
-  cam.p+=(cam.tp-cam.p)*.12;cam.r+=(cam.tr-cam.r)*.12;
-  var ph=(cam.p+Math.sin(t*.35)*2.5)*Math.PI/180,sP=Math.sin(ph),cP=Math.cos(ph),rl=cam.r*Math.PI/180,sR=Math.sin(rl),cR=Math.cos(rl),
-      wd=W>820,cx=wd?W*.7:W/2,cy=wd?H*.52:(36+Math.min(W*.92,380))*.5,sc=(wd?Math.min(W*.34,H*.47):Math.min(W*.44,(36+Math.min(W*.92,380))*.45))/2.2,o={};
-  function pr(X,Y,Z){var sy=Z*sP-Y*cP,d=Z*cP+Y*sP,k=1/(1-d*.38),x1=X*cR-sy*sR,y1=X*sR+sy*cR;o.x=cx+x1*k*sc;o.y=cy+y1*k*sc;o.k=k;o.d=d;return o;}
+  var wd=W>820,cx=wd?W*.7:W/2,cy=wd?H*.52:(36+Math.min(W*.92,380))*.5,sc=(wd?Math.min(W*.34,H*.47):Math.min(W*.44,(36+Math.min(W*.92,380))*.45))/2.2,o={},
+      rl=Math.atan2(M[1][1],M[0][1])+Math.PI/2,ny=M[2][1],kk=Math.max(.14,Math.abs(ny));
+  function pr(X,Y,Z){var x1=M[0][0]*X+M[0][1]*Y+M[0][2]*Z,y1=M[1][0]*X+M[1][1]*Y+M[1][2]*Z,d=M[2][0]*X+M[2][1]*Y+M[2][2]*Z,k=1/(1-d*.22);o.x=cx+x1*k*sc;o.y=cy+y1*k*sc;o.k=k;o.d=d;return o;}
   x.setTransform(DPR,0,0,DPR,0,0);x.globalAlpha=1;x.drawImage(bg,0,0,W,H);
   pr(0,0,0);var ox0=o.x,oy0=o.y;pr(Vd[0],Vd[1],Vd[2]);var vx=ox0-o.x,vy=oy0-o.y,vl=Math.hypot(vx,vy)||1,dts=Math.min(.05,(now-(draw.l||now))/1000);vx/=vl;vy/=vl;draw.l=now;
   ST.forEach(function(s){s.x+=vx*30*s.l*dts;s.y+=vy*30*s.l*dts;if(s.x<-3)s.x+=W+6;else if(s.x>W+3)s.x-=W+6;if(s.y<-3)s.y+=H+6;else if(s.y>H+3)s.y-=H+6;
@@ -162,9 +165,9 @@ function draw(now){
         for(k=0;k<=N;k++){q=pos(p,a-k/N*span*TAU);f2=k/N*.6;pr(q[0]-Vd[0]*f2,q[1]-Vd[1]*f2,q[2]-Vd[2]*f2);pp.push([o.x,o.y]);}
         x.lineCap='round';x.lineWidth=Math.max(1,rad*.2);
         for(k=1;k<=N;k++){x.strokeStyle=rgba(p.rgb,.5*(1-k/N));x.beginPath();x.moveTo(pp[k-1][0],pp[k-1][1]);x.lineTo(pp[k][0],pp[k][1]);x.stroke();}}
-      if(p.ring)ringHalf(px,py,rad,rl,Math.max(.14,sP),false);
+      if(p.ring)ringHalf(px,py,rad,rl,kk,ny<0);
       ball(px,py,rad,p,spin,sx,sy,rl);
-      if(p.ring)ringHalf(px,py,rad,rl,Math.max(.14,sP),true);
+      if(p.ring)ringHalf(px,py,rad,rl,kk,ny>=0);
       if(Math.hypot(mx-px,my-py)<rad+12)lab={t:p.n,x:px,y:py-rad-10};}});
     (p.mo||[]).forEach(function(m,q){var am=t*m[1]+q*2;pr(X+Math.cos(am)*m[0]*3,Y,Z+Math.sin(am)*m[0]*3);var qx=o.x,qy=o.y,qr=Math.max(1.2,m[2]*sc*3.2*o.k),qd=o.d;
       L.push({d:qd,f:function(){ball(qx,qy,qr,{c:m[3]},am,sx,sy,rl);}});});
@@ -186,14 +189,13 @@ function draw(now){
 }
 
 /* boshqaruv */
-cv.addEventListener('pointerdown',function(e){drag={x:e.clientX,y:e.clientY};cv.setPointerCapture&&cv.setPointerCapture(e.pointerId);cv.style.cursor='grabbing';});
-cv.addEventListener('pointermove',function(e){var r=cv.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;
-  if(drag){cam.tr+=(e.clientX-drag.x)*.35;if(e.pointerType==='mouse')cam.tp=Math.max(28,Math.min(84,cam.tp-(e.clientY-drag.y)*.3));
-    drag={x:e.clientX,y:e.clientY};cam.t=performance.now();}
+EL('pointerdown',function(e){drag={x:e.clientX,y:e.clientY};e.currentTarget.setPointerCapture&&e.currentTarget.setPointerCapture(e.pointerId);cv.style.cursor='grabbing';});
+EL('pointermove',function(e){var r=cv.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;
+  if(drag){spin((e.clientX-drag.x)*.007,(e.clientY-drag.y)*.007);drag={x:e.clientX,y:e.clientY};}
   if(still)draw(performance.now());});
 function up(){drag=null;cv.style.cursor='grab';}
-cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);
-cv.addEventListener('pointerleave',function(){mx=my=-99;});
+EL('pointerup',up);EL('pointercancel',up);
+EL('pointerleave',function(){mx=my=-99;});
 
 /* ishga tushirish / to‘xtatish (ko‘rinmaganda hech narsa hisoblanmaydi) */
 var raf=0,vis=true,last=0,ema=16,bad=0;
