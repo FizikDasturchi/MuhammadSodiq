@@ -49,7 +49,8 @@ function latCell(){
 /* ───────── 2. 3D QUYOSH TIZIMI ───────── */
 var cv=$('cv');if(!cv)return;
 var x=cv.getContext('2d');if(!x)return;
-var box=cv.parentNode,W=0,H=0,DPR=1,Q=1,bg=null,tw=[];
+var box=cv.parentNode,W=0,H=0,DPR=1,Q=1,bg=null,tw=[],MB=matchMedia('(pointer:coarse)').matches,scr=0,scrT=0,tb=null;
+addEventListener('scroll',function(){scr=1;clearTimeout(scrT);scrT=setTimeout(function(){scr=0;},160);},{passive:true});
 var TAU=Math.PI*2,still=matchMedia('(prefers-reduced-motion:reduce)').matches;
 /* sayyoralar: orbita, hajm (ko‘rinish uchun kattalashtirilgan), davr (soniya), rang va sirt */
 var P=[
@@ -84,10 +85,12 @@ function spin(th,fi){var c=Math.cos(th),s=Math.sin(th),i,a,b,d;for(i=0;i<3;i++){
   c=Math.cos(fi);s=Math.sin(fi);for(i=0;i<3;i++){b=M[1][i];d=M[2][i];M[1][i]=b*c+d*s;M[2][i]=-b*s+d*c;}}
 var zone=D.createElement('div');zone.style.cssText='position:absolute;z-index:0;touch-action:none;cursor:grab';box.appendChild(zone);
 function EL(ev,fn){cv.addEventListener(ev,fn);zone.addEventListener(ev,fn);}
+if(MB){zone.style.touchAction='pan-y';tb=D.createElement('button');tb.type='button';tb.textContent='⟲ 3D aylantirish';tb.style.cssText='position:absolute;z-index:3;font:600 12px system-ui,sans-serif;padding:7px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.35);background:rgba(7,18,38,.72);color:#fff';box.appendChild(tb);
+  tb.addEventListener('click',function(){var on=zone.style.touchAction!=='none';zone.style.touchAction=on?'none':'pan-y';tb.textContent=on?'✓ Aylantirish yoqilgan':'⟲ 3D aylantirish';});}
 
 function resize(){
   W=box.clientWidth;H=box.clientHeight;if(!W||!H)return;
-  DPR=Math.min(window.devicePixelRatio||1,Q?2:1);
+  DPR=Math.min(window.devicePixelRatio||1,Q?(MB?1.5:2):1);
   cv.width=Math.round(W*DPR);cv.height=Math.round(H*DPR);
   bg=D.createElement('canvas');bg.width=cv.width;bg.height=cv.height;
   var b=bg.getContext('2d');b.scale(DPR,DPR);b.fillStyle='#030816';b.fillRect(0,0,W,H);
@@ -96,8 +99,9 @@ function resize(){
     g.addColorStop(0,'rgba('+n[3]+','+n[4]+')');g.addColorStop(1,'rgba('+n[3]+',0)');b.fillStyle=g;b.fillRect(0,0,W,H);});
   var k2,n2=Math.round(W*H/260);for(k2=0;k2<n2;k2++){b.globalAlpha=.07+.45*Math.pow(Math.random(),2);b.fillStyle=SC[(Math.random()*3)|0];b.fillRect(Math.random()*W,Math.random()*H,.8,.8);}
   b.save();b.translate(W*.5,H*.5);b.rotate(-.45);var gb=b.createLinearGradient(0,-H*.3,0,H*.3);gb.addColorStop(0,'rgba(100,110,160,0)');gb.addColorStop(.5,'rgba(120,125,175,.12)');gb.addColorStop(1,'rgba(100,110,160,0)');b.fillStyle=gb;b.fillRect(-W,-H*.3,W*2,H*.6);b.restore();
-  ST=[];for(var k=0,n=Math.round(W*H/(Q?600:1800)),u,c,zq;k<n;k++){u=Math.pow(Math.random(),4);c=Math.random();zq=.12+Math.random()*.88;ST.push({z:zq,x:(Math.random()-.5)*(W/(Math.max(W,H)*.6))*zq,y:(Math.random()-.5)*(H/(Math.max(W,H)*.6))*zq,r:.4+u*1.9,al:Math.min(1,.2+.55*Math.random()+u*.6),p:Math.random()*6.3,s:.8+Math.random()*1.6,c:c<.34?0:c<.56?1:c<.72?2:c<.84?3:c<.9?4:5});}
+  ST=[];for(var k=0,n=Math.round(W*H/(MB?1500:Q?600:1800)),u,c,zq;k<n;k++){u=Math.pow(Math.random(),4);c=Math.random();zq=.12+Math.random()*.88;ST.push({z:zq,x:(Math.random()-.5)*(W/(Math.max(W,H)*.6))*zq,y:(Math.random()-.5)*(H/(Math.max(W,H)*.6))*zq,r:.4+u*1.9,al:Math.min(1,.2+.55*Math.random()+u*.6),p:Math.random()*6.3,s:.8+Math.random()*1.6,c:c<.34?0:c<.56?1:c<.72?2:c<.84?3:c<.9?4:5});}
   var w2=W>820,ex=w2?Math.min(W*.34,H*.47):Math.min(W*.44,(36+Math.min(W*.92,380))*.45),zx=w2?W*.7:W/2,zy=w2?H*.52:(36+Math.min(W*.92,380))*.5;
+  if(tb){tb.style.left=Math.max(8,zx-ex+4)+'px';tb.style.top=(zy+ex-34)+'px';}
   zone.style.left=(zx-ex)+'px';zone.style.top=(zy-ex)+'px';zone.style.width=(2*ex)+'px';zone.style.height=(2*ex)+'px';
   draw(performance.now());
 }
@@ -146,7 +150,7 @@ function draw(now){
       rl=Math.atan2(M[1][1],M[0][1])+Math.PI/2,ny=M[2][1],kk=Math.max(.14,Math.abs(ny));
   function pr(X,Y,Z){var x1=M[0][0]*X+M[0][1]*Y+M[0][2]*Z,y1=M[1][0]*X+M[1][1]*Y+M[1][2]*Z,d=M[2][0]*X+M[2][1]*Y+M[2][2]*Z,k=1/(1-d*.22);o.x=cx+x1*k*sc;o.y=cy+y1*k*sc;o.k=k;o.d=d;return o;}
   x.setTransform(DPR,0,0,DPR,0,0);x.globalAlpha=1;x.drawImage(bg,0,0,W,H);
-  var dts=Math.min(.05,(now-(draw.l||now))/1000),vv=[M[0][0]*Vd[0]+M[0][1]*Vd[1]+M[0][2]*Vd[2],M[1][0]*Vd[0]+M[1][1]*Vd[1]+M[1][2]*Vd[2],M[2][0]*Vd[0]+M[2][1]*Vd[1]+M[2][2]*Vd[2]],Sx=Math.max(W,H)*.6,spd=.1;draw.l=now;
+  var dts=Math.min(.05,(now-(draw.l||now))/1000),vv=[M[0][0]*Vd[0]+M[0][1]*Vd[1]+M[0][2]*Vd[2],M[1][0]*Vd[0]+M[1][1]*Vd[1]+M[1][2]*Vd[2],M[2][0]*Vd[0]+M[2][1]*Vd[1]+M[2][2]*Vd[2]],Sx=Math.max(W,H)*.6,spd=.12;draw.l=now;
   /* yulduzlar kamera fazosida: tizim bizga qarab ketsa, ular uzoqlashadi (markazga), uzoqlashsa ular yaqinlashadi (chetga), yon tomonga ketsa surilishadi */
   ST.forEach(function(s){var px,py,sz;s.x-=vv[0]*spd*dts;s.y-=vv[1]*spd*dts;s.z+=vv[2]*spd*dts;
     if(s.z<.08||s.z>1.1){s.z=s.z<.08?.95+Math.random()*.05:.12+Math.random()*.1;s.x=(Math.random()-.5)*(W/Sx)*s.z;s.y=(Math.random()-.5)*(H/Sx)*s.z;}
@@ -154,11 +158,9 @@ function draw(now){
     if(px<-4||px>W+4||py<-4||py>H+4){
       if(Math.abs(vv[2])<.3){if(px<-4)px+=W+8;else if(px>W+4)px-=W+8;if(py<-4)py+=H+8;else if(py>H+4)py-=H+8;s.x=(px-W/2)*s.z/Sx;s.y=(py-H/2)*s.z/Sx;}
       else{s.z=vv[2]<0?.9+Math.random()*.1:.12+Math.random()*.1;s.x=(Math.random()-.5)*(W/Sx)*s.z;s.y=(Math.random()-.5)*(H/Sx)*s.z;px=W/2+s.x/s.z*Sx;py=H/2+s.y/s.z*Sx;}}
-    sz=s.r*Math.min(1.6,.6+.4/s.z)*1.2;
+    sz=s.r*Math.min(2,.55+.45/s.z)*1.15;
     x.globalAlpha=Math.min(1,s.al*(s.r>1?.75+.25*Math.sin(t*s.s+s.p):1)*Math.min(1,1.2-s.z*.6));x.fillStyle=SC[s.c];x.strokeStyle=SC[s.c];
-    var tl=.1,pz=Math.max(.05,s.z-vv[2]*spd*tl),qx=W/2+(s.x+vv[0]*spd*tl)/pz*Sx,qy=H/2+(s.y+vv[1]*spd*tl)/pz*Sx,ln=Math.hypot(px-qx,py-qy);
-    if(s.r>.85&&ln>2&&ln<140){x.lineWidth=Math.max(.6,sz*.5);x.lineCap='round';x.beginPath();x.moveTo(qx,qy);x.lineTo(px,py);x.stroke();}
-    else if(sz>1.6){x.beginPath();x.arc(px,py,sz*.5,0,TAU);x.fill();}else x.fillRect(px,py,sz,sz);});
+    if(sz>1.6){x.beginPath();x.arc(px,py,sz*.5,0,TAU);x.fill();if(s.r>1.7){x.globalAlpha*=.22;x.beginPath();x.arc(px,py,sz*1.1,0,TAU);x.fill();}}else x.fillRect(px,py,sz,sz);});
   x.globalAlpha=1;
   /* orbitalar */
   x.lineWidth=1;x.strokeStyle='rgba(170,200,255,.05)';
@@ -213,7 +215,7 @@ EL('pointerleave',function(){mx=my=-99;});
 /* ishga tushirish / to‘xtatish (ko‘rinmaganda hech narsa hisoblanmaydi) */
 var raf=0,vis=true,last=0,ema=16,bad=0;
 function loop(now){
-  raf=requestAnimationFrame(loop);var dt=now-last;if(dt<15)return;last=now;
+  raf=requestAnimationFrame(loop);var dt=now-last;if(dt<(MB?32:15))return;last=now;if(scr)return;
   ema=ema*.92+Math.min(dt,100)*.08;
   if(Q&&ema>30&&++bad>45){Q=0;resize();}   /* sekin qurilma: soddalashtirilgan rejim */
   draw(now);}
