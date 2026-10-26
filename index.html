@@ -130,7 +130,7 @@ body.in-app #pool{visibility:visible;pointer-events:auto}
 @media(max-width:820px){#plist{grid-template-columns:1fr;grid-template-rows:none;overflow:auto}.pl-list{overflow:visible}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.spin{animation:none}.app{transition:none}.app:hover{transform:none}}
 </style>
-<script src="design.js?v=14" defer></script>
+<script src="design.js?v=15" defer></script>
 </head>
 <body>
 <header class="topbar">
@@ -286,7 +286,7 @@ function closePlaylist(){clearInterval(PL.timer);clearInterval(PL.saver);plSave(
  $('plbox').innerHTML='';$('plist').classList.remove('show');}
 addEventListener('pagehide',plSave);document.addEventListener('visibilitychange',function(){if(document.hidden)plSave();});
 /* ── Yuklanish effekti: galaktikaga uchib kirish va yulduzga yaqinlashish (~7.5 s) ── */
-var AB=new Image(),AS=new Image();AB.src='galaxies-big.jpg?v=1';AS.src='galaxies.jpg?v=1';
+var AB=new Image(),AS=new Image();AB.src='galaxies-big.jpg?v=2';AS.src='galaxies.jpg?v=2';
 var BB=[],BL=-1,wc=$('wc'),wx=wc.getContext('2d'),W0={on:0,raf:0},T2=Math.PI*2,WS=[],NB=null,ww=0,wh=0,wd=1,SP={},WB=[],WL=null,HOLD=6.45,
  NM={'video-darslar':'Video darslar','plastinkalar':'Plastinkalar simulyatori','quiz':'Quiz Web','kutubxona':'Fizika kutubxonasi','lugat':'Dictionary Test App','kalkulyator':'Laboratoriya kalkulyatori'},
  GT={'video-darslar':'tilt','plastinkalar':'ring','quiz':'spiral','kutubxona':'bar','lugat':'edge','kalkulyator':'ell'},
@@ -371,7 +371,7 @@ function warpStart(p){cancelAnimationFrame(W0.raf);
  if(still){W0.on=0;loading.classList.remove('fx');loading.classList.toggle('done',W0.rdy());return;}
  loading.classList.remove('done');loading.classList.add('fx');wc.style.opacity=1;wsz();WS=[];
  var ty=GT[p.id]||'spiral',bi=-1;
- if(AB.complete&&AB.naturalWidth){if(!BB.length){BB=[0,1,2,3,4,5,6,7,8,9,10].sort(function(){return Math.random()-.5;});if(BB[BB.length-1]===BL)BB.unshift(BB.pop());}bi=BB.pop();BL=bi;W0.sp={img:AB,sx:(bi%4)*384,sy:((bi/4)|0)*384,w:384,N:720,photo:1};}
+ if(AB.complete&&AB.naturalWidth){if(!BB.length){BB=[0,1,2,3,4,5,6,7,8,9,10,11,12].sort(function(){return Math.random()-.5;});if(BB[BB.length-1]===BL)BB.unshift(BB.pop());}bi=BB.pop();BL=bi;W0.sp={img:AB,sx:(bi%4)*384,sy:((bi/4)|0)*384,w:384,N:720,photo:1};}
  else W0.sp=SP[ty]||(SP[ty]=gal(ty,ww<700?520:720));
  for(var i=0,n=Math.min(520,ww*wh/1300|0);i<n;i++)WS.push({a:Math.random()*T2,r:.05+Math.random()*1.2,z:Math.random()*.97+.03,w:Math.random()<.15,b:Math.random()<.3});
  var an=Math.random()*T2,ph=Math.random()*T2,sp=W0.sp,b,c,rr,m;if(!WB.length){WB=[[-1,-1],[0,-1],[1,-1],[-1,0],[0,0],[1,0],[-1,1],[0,1],[1,1]].sort(function(){return Math.random()-.5;});if(WL&&WB[WB.length-1]===WL)WB.unshift(WB.pop());}
@@ -379,12 +379,14 @@ function warpStart(p){cancelAnimationFrame(W0.raf);
  if(sp.photo){var tr=(.1+.22*Math.random())*sp.N/2;W0.tx=Math.cos(ph)*tr;W0.ty=Math.sin(ph)*tr;}
  else{W0.tx=sp.u*(Math.cos(ph)*Math.cos(sp.rot)-sp.tl*Math.sin(ph)*Math.sin(sp.rot));W0.ty=sp.u*(Math.cos(ph)*Math.sin(sp.rot)+sp.tl*Math.sin(ph)*Math.cos(sp.rot));}
  W0.gl=document.createElement('canvas');W0.gl.width=wc.width;W0.gl.height=wc.height;var gb=W0.gl.getContext('2d'),gi,gs,gx,gy,gk,sm=AS.complete&&AS.naturalWidth,bg2=AB.complete&&AB.naturalWidth;gb.scale(wd,wd);gb.globalCompositeOperation='lighter';
- var pl=[],tries,ok,q;
- if(sm||bg2)for(gi=0;gi<(ww<700?7:10);gi++){gk=bg2&&(!sm||Math.random()<.35);gs=Math.min(gk?ww*(.1+.1*Math.random()):ww*(.05+.08*Math.random()),wh*.45);
-  for(tries=0,ok=0;tries<14&&!ok;tries++){gx=(Math.random()*.86+.07)*ww;gy=(Math.random()*.86+.07)*wh;ok=1;for(q=0;q<pl.length;q++)if(Math.hypot(gx-pl[q][0],gy-pl[q][1])<(gs+pl[q][2])*.62){ok=0;break;}}
+ var pl=[],tries,ok,q,iS=[],iB=[],rn=function(){return Math.random()-.5;},nb=0,tiny;
+ for(q=0;q<96;q++)iS.push(q);for(q=0;q<13;q++)iB.push(q);iS.sort(rn);iB.sort(rn);
+ if(sm||bg2)for(gi=0;gi<(ww<700?13:24);gi++){gk=bg2&&nb<(ww<700?3:5)&&(!sm||Math.random()<.22);if(gk)nb++;tiny=!gk&&Math.random()<.4;
+  gs=Math.min(gk?ww*(.11+.1*Math.random()):tiny?ww*(.025+.03*Math.random()):ww*(.045+.07*Math.random()),wh*.42);
+  for(tries=0,ok=0;tries<16&&!ok;tries++){gx=(Math.random()*.88+.06)*ww;gy=(Math.random()*.88+.06)*wh;ok=1;for(q=0;q<pl.length;q++)if(Math.hypot(gx-pl[q][0],gy-pl[q][1])<(gs+pl[q][2])*.5){ok=0;break;}}
   if(!ok)continue;pl.push([gx,gy,gs]);
-  gb.save();gb.globalAlpha=.5+.35*Math.random();gb.translate(gx,gy);gb.rotate(Math.random()*T2);if(Math.random()<.5)gb.scale(-1,1);
-  if(gk){gk=(Math.random()*11)|0;gb.drawImage(AB,(gk%4)*384,((gk/4)|0)*384,384,384,-gs/2,-gs/2,gs,gs);}else{gk=(Math.random()*116)|0;gb.drawImage(AS,(gk%12)*128,((gk/12)|0)*128,128,128,-gs/2,-gs/2,gs,gs);}gb.restore();}
+  gb.save();gb.globalAlpha=.55+.4*Math.random();gb.translate(gx,gy);gb.rotate(Math.random()*T2);if(Math.random()<.5)gb.scale(-1,1);
+  if(gk){q=iB.pop();gb.drawImage(AB,(q%4)*384,((q/4)|0)*384,384,384,-gs/2,-gs/2,gs,gs);}else{q=iS.pop();gb.drawImage(AS,(q%12)*128,((q/12)|0)*128,128,128,-gs/2,-gs/2,gs,gs);}gb.restore();}
  W0.dl=document.createElement('canvas');W0.dl.width=wc.width;W0.dl.height=wc.height;b=W0.dl.getContext('2d');b.scale(wd,wd);
  sf(b,ww,wh,ww<700?2400:6000,14);
  W0.name=NM[p.id]||p.title;W0.t0=0;W0.hold=0;W0.on=1;W0.raf=requestAnimationFrame(wl);}
